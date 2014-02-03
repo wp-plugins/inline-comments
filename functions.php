@@ -210,7 +210,7 @@
 	        <tr valign="top">
 	        	<th scope="row">Responsive Mode (Beta)</th>
 		        <td>
-					<input name="check_rmode" type="checkbox" value="1" <?php checked( '1', get_option( 'check_rmode' ) ); ?> /> <span>If checked, the plugin reacts different on smaller screens. You can test it but this feature is very experimental.</span>
+					<input name="check_rmode" type="checkbox" value="1" <?php checked( '1', get_option( 'check_rmode' ) ); ?> /> <span>If checked, the plugin reacts different on smaller/larger screens.</span>
 		        </td>
 	        </tr>
 	        <tr valign="top">
