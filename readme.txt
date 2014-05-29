@@ -15,9 +15,7 @@ Inline Comments adds your comment system to the side of paragraphs, headlines an
 
 It performs native with WordPress comments. The comment area is shown when you click the comment count bubbles (left or right) beside any section.
 
-Get more information and test a demo on the developer’s website:
-
-[kevinw.de/inline-comments](http://kevinw.de/inline-comments)
+Demo and more information on the developer’s website: [kevinw.de/inline-comments](http://kevinw.de/inline-comments)
 
 == Installation ==
 
