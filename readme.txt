@@ -16,7 +16,6 @@ Inline Comments adds your comment system to the side of paragraphs, headlines an
 Get more information and test a demo on the developer’s website:
 [kevinw.de/inline-comments](http://kevinw.de/inline-comments)
 
-
 == Installation ==
 
 1. Upload Inline Comments into you plugin directory (/wp-content/plugins/) and activate the plugin through the 'Plugins' menu in WordPress.
