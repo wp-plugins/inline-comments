@@ -57,7 +57,7 @@ First, you need an account and a registered site on disqus.com. Then read this: 
 
 == Screenshots ==
 
-1. A screenshot of a site that uses Inline Comments.
+1. Screenshot of a site that uses Inline Comments.
 2. Comment count bubble on the right (visible when hovering the heading, requires custom selector "h1").
 3. Comment area - visible after clicking on the bubble.
 4. Comment area with option "Highlighting" enabled.
