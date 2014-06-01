@@ -31,13 +31,14 @@ Demo and more information on the developer’s website: [kevinw.de/inline-commen
 * Commentators can better refer to specific paragraphs/statements in an article.
 * Readers can comment while reading (and don’t have to scroll to the very bottom).
 
-Test the demo and get more information on the developer’s website: [kevinw.de/inline-comments](http://kevinw.de/inline-comments)
+Demo and get more information on the developer’s website: [kevinw.de/inline-comments](http://kevinw.de/inline-comments)
+
+= How can I change the formatting of the commentator’s currently selected section? =
+For comment system "WordPress Comments", use custom CSS like this: *.incom-active { background: #f3f3f3; }*
 
 = Where do you get your Disqus shortname? =
 First, you need an account and a registered site on disqus.com. Then read this: http://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
 
-= How can I change the formatting of the commentators currently selected section? =
-For comment system "WordPress Comments", use custom CSS like this: .incom-active { background: #f3f3f3; }
 
 == Changelog ==
 
