@@ -7,7 +7,9 @@ $bubble-margin-left: 10px;
 
 $black: #000;
 $grey_light: #f3f3f3;
-$z-index-base: 80;
+$z-index-base: 2;
+
+$vcard-image-size: 15px;
 
 /*
  * Mixins
@@ -112,6 +114,12 @@ $z-index-base: 80;
   }
   .comment-author {
     padding: 0 0 0.3em;
+    position: initial;
+  }
+  .vcard img {
+    @include vendor-prefix( border-radius, 50% );
+    width: $vcard-image-size;
+    height: $vcard-image-size;
   }
   img {
     opacity: 0.3;
@@ -131,6 +139,7 @@ $z-index-base: 80;
     border: 2px solid $black;
     width: 19px;
     height: 19px;
+    line-height: 19px;
     display: block;
     text-align: center;
     opacity: 0.3;

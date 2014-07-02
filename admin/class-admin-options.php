@@ -16,7 +16,18 @@ class INCOM_Admin_Options {
 			add_action( 'admin_footer', array( $this, 'incom_admin_css' ) );
 			add_action( 'admin_footer', array( $this, 'incom_admin_js' ) );
 		}
+		$plugin = plugin_basename( INCOM_FILE ); 
+		add_filter("plugin_action_links_$plugin", array( $this, 'incom_settings_link' ) );
 		$this->register_incom_settings();
+	}
+
+	/**
+	 * Add settings link on plugin page
+	 */
+	function incom_settings_link($links) { 
+	  $settings_link = '<a href="options-general.php?page=incom.php">Settings</a>'; 
+	  array_unshift($links, $settings_link); 
+	  return $links; 
 	}
 
 	function incom_create_menu() {
@@ -24,10 +35,24 @@ class INCOM_Admin_Options {
 	}
 
 	function register_incom_settings() {
-		$arr = array('disqus_shortname', 'multiselector', 'moveselector', 'select_bubble_style', 'bubble_static', 'check_highlight', 'select_align', 'select_comment_type', 'set_bgcolour', 'set_maxwidth', 'custom_css', 'check_rmode');
+		$arr = array(
+			'disqus_shortname',
+			'multiselector',
+			'moveselector',
+			'select_bubble_style',
+			'bubble_static',
+			'check_highlight',
+			'select_align',
+			'select_comment_type',
+			'set_bgcolour',
+			'set_maxwidth',
+			'custom_css',
+			'check_rmode'
+		);
 		foreach ( $arr as $i ) {
 			register_setting( 'incom-settings-group', $i );
 		}
+		do_action( 'register_incom_settings_after' );
 	}
 
 	function incom_settings_page()	{ ?>
@@ -40,6 +65,7 @@ class INCOM_Admin_Options {
 				<li class="hide-wp"><a href="#tabs-2">WordPress-specific</a></li>
 				<li class="hide-disqus"><a href="#tabs-3">Disqus-specific</a></li>
 		    	<li><a href="#tabs-4">Styling</a></li>
+		    	<?php do_action( 'incom_settings_page_tabs_link_after' ); ?>
 		    </ul>
 
 			<form method="post" action="options.php">
@@ -180,6 +206,7 @@ class INCOM_Admin_Options {
 					        		<span>
 					        			For example:<br>
 					        			<i>.incom-bubble-dynamic a.incom-bubble-link { color: red; }</i><br>
+					        			<i>.incom-active { background: #f3f3f3; }</i><br>
 					        			(You don't know CSS? Try the <a href="http://www.w3schools.com/css/DEFAULT.asp" target="_blank" title="CSS Tutorial on W3Schools">CSS Tutorial</a> on W3Schools.)
 					        		</span>
 					        	</td>
@@ -188,6 +215,8 @@ class INCOM_Admin_Options {
 				    </table>
 
 				</div>
+
+				<?php do_action( 'incom_settings_page_tabs_after' ); ?>
 
 			    <?php submit_button(); ?>
 			</form>
