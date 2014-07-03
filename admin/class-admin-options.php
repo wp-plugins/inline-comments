@@ -36,10 +36,17 @@ class INCOM_Admin_Options {
 
 	function register_incom_settings() {
 		$arr = array(
+			// Disqus-only
 			'disqus_shortname',
 			'multiselector',
 			'moveselector',
+			// WP-only
 			'select_bubble_style',
+			'select_bubble_fadein',
+			'select_bubble_fadeout',
+			'comment_permalink',
+			'bubble_static_always',
+
 			'bubble_static',
 			'check_highlight',
 			'select_align',
@@ -124,12 +131,42 @@ class INCOM_Admin_Options {
 					        	</td>
 					        </tr>
 					        <tr valign="top">
-					        	<th scope="row">Bubble Style +<span class="newred">New!</span><span class="description thin"><br>for sections with no comments yet</th>
+					        	<th scope="row">Bubble Style <span class="description thin"><br>for sections with no comments yet</th>
 						        <td>
 									<select class="select" typle="select" name="select_bubble_style">
 										<option value="bubble"<?php if (get_option('select_bubble_style') === 'bubble') { echo ' selected="selected"'; } ?>>Bubble</option>
 										<option value="plain"<?php if (get_option('select_bubble_style') === 'plain') { echo ' selected="selected"'; } ?>>Plain +</option>
 									</select>
+						        </td>
+					        </tr>
+					        <tr valign="top">
+					        	<th scope="row">Always Display Bubbles <span class="newred">New!</span></th>
+						        <td>
+									<input name="bubble_static_always" type="checkbox" value="1" <?php checked( '1', get_option( 'bubble_static_always' ) ); ?> /> <span>If checked, the comment count bubbles will always be visible (and not only on hover). Bubbles will not fade.</span>
+						        </td>
+					        </tr>
+					        <tr valign="top">
+					        	<th scope="row">Bubble Fade In <span class="newred">New!</span></th>
+						        <td>
+									<select class="select" typle="select" name="select_bubble_fadein">
+										<option value="default"<?php if (get_option('select_bubble_fadein') === 'default') { echo ' selected="selected"'; } ?>>No animation</option>
+										<option value="fadein"<?php if (get_option('select_bubble_fadein') === 'fadein') { echo ' selected="selected"'; } ?>>Basic animation</option>
+									</select>
+						        </td>
+					        </tr>
+					        <tr valign="top">
+					        	<th scope="row">Bubble Fade Out <span class="newred">New!</span></th>
+						        <td>
+									<select class="select" typle="select" name="select_bubble_fadeout">
+										<option value="default"<?php if (get_option('select_bubble_fadeout') === 'default') { echo ' selected="selected"'; } ?>>No animation</option>
+										<option value="fadeout"<?php if (get_option('select_bubble_fadeout') === 'fadeout') { echo ' selected="selected"'; } ?>>Basic animation</option>
+									</select>
+						        </td>
+					        </tr>
+					        <tr valign="top">
+					        	<th scope="row">Hide Permalinks <span class="newred">New!</span></th>
+						        <td>
+									<input name="comment_permalink" type="checkbox" value="1" <?php checked( '1', get_option( 'comment_permalink' ) ); ?> /> <span>If checked, the permalink icon next to each comment will not be displayed.</span>
 						        </td>
 					        </tr>
 					    </tbody>

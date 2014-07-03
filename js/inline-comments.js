@@ -26,6 +26,7 @@
     var classBubbleDot = '.'+classBubble;
     var classBubbleStyle = classBubble+'-style';
     var classBubbleStatic = classBubble+'-static';
+      var classBubbleStaticDot = '.'+classBubbleStatic;
     var classBubbleDynamic = classBubble+'-dynamic';
     var classBubbleActive = classBubble+'-active';  // Class for currently selected bubble
     var classBubbleLink = classBubble+'-link';
@@ -73,8 +74,11 @@
         selectors: 'p',
         moveSiteSelector: idWrapperAppendTo,
         countStatic: true,
+        alwaysStatic: false,
         defaultBubbleText: '+',
         bubbleStyle: 'bubble',
+        bubbleAnimationIn: 'default',
+        bubbleAnimationOut: 'default',
         // highlighted: false,
         position: 'left',
         background: 'white',
@@ -201,10 +205,14 @@
     var containerClass = classBubble;
     var space = ' ';
 
-    if ( ( testIfCommentsCountLarger0( source ) && o.countStatic ) ) {
-      containerClass += space + classBubbleStyle + space + classBubbleStatic;
+    if ( 
+        ( o.alwaysStatic ) ||
+        ( testIfCommentsCountLarger0( source ) && o.countStatic )
+      ) {
+      containerClass += space + classBubbleStatic;
     }
-    else if (
+
+    if (
         testIfCommentsCountLarger0( source ) ||
         ( !testIfCommentsCountLarger0( source ) && ( o.bubbleStyle === 'bubble' ) )
       ) {
@@ -238,12 +246,27 @@
     if ( !bubble.hasClass( classBubbleStatic ) ) {
       // Handle hover (for both, "elements" and $bubble)
       element.add(bubble).hover(function() {
-        bubble.stop( true, true ).fadeIn();
+        // First hide all non-static bubbles
+        $( classBubbleDot+':not('+classBubbleStaticDot+')' ).hide();
+
+        if ( o.bubbleAnimationIn === 'fadein' ) {
+          bubble.stop( true, true ).fadeIn();
+        }
+        else {
+          bubble.stop( true, true ).show();
+        }
+
         if ( !isInWindow( bubble ) ) {
           bubble.hide();
         }  
       }, function() {
-        bubble.stop( true, true ).fadeOut( 2000 );
+        if ( o.bubbleAnimationOut === 'fadeout' ) {
+          bubble.stop( true, true ).fadeOut();
+        }
+        else {
+          // Delay hiding to make it possible to hover the bubble before it disappears
+          bubble.stop( true, true ).delay( 700 ).hide(0);
+        }
       });
     }
   };
