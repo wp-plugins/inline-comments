@@ -6,12 +6,12 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, comment, comments, content, counter, free, integration, jquery, mobile, page, pages, plugin, post, posts, sidebar, wordpress
 Requires at least: 3.0
 Tested up to: 3.9.1
-Stable tag: 1.0.6
+Stable tag: 1.1
 
-Inline Comments adds your comment system to the side of paragraphs, headlines and other sections (like headlines and images) of your post.
+Inline Comments adds your comment system to the side of paragraphs and other sections (like headlines and images) of your post.
 
 == Description ==
-Inline Comments adds your comment system to the side of paragraphs, headlines and other sections (like headlines and images) of your post.
+Inline Comments adds your comment system to the side of paragraphs and other sections (like headlines and images) of your post.
 
 It performs native with WordPress comments. The comment area is shown when you click the comment count bubbles (left or right) beside any section.
 
@@ -46,9 +46,12 @@ First, you need an account and a registered site on disqus.com. Then read this: 
 
 == Changelog ==
 
+= 1.1 =
+* No page reload anymore: INLINE COMMENTS NOW EMPOWERS WP-AJAXIFY-COMMENTS!! This improves the user experience with Ajax functionality: Your page will not reload after a comment is submitted.
+
 = 1.0.6 =
 * New feature: Decide if bubbles should fade in/out or appear/disappear immediately
-* New feature: You can make the comment bubbles to be always visible.
+* New feature: You can make the comment bubbles to be always visible
 * New feature: Hide the permalink that’s displayed next to each comment
 
 = 1.0.4 =

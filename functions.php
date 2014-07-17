@@ -2,16 +2,16 @@
 /*
  * Plugin Name: Inline Comments
  * Plugin URI: http://kevinw.de/inline-comments
- * Description: Inline Comments adds your comment system to the side of paragraphs, headlines and other sections (like headlines and images) of your post. It performs native with WordPress comments.
+ * Description: Inline Comments adds your comment system to the side of paragraphs and other sections (like headlines and images) of your post. It performs native with WordPress comments.
  * Author: Kevin Weber
- * Version: 1.0.6
+ * Version: 1.1
  * Author URI: http://kevinw.de/
  * License: GPL v3
  * Text Domain: inline-comments
 */
 
 if ( !defined( 'INCOM_VERSION' ) ) {
-	define( 'INCOM_VERSION', '1.0.6' );
+	define( 'INCOM_VERSION', '1.1' );
 }
 
 if ( !defined( 'INCOM_VERSION_NAME' ) ) {
@@ -20,6 +20,10 @@ if ( !defined( 'INCOM_VERSION_NAME' ) ) {
 
 if ( !defined( 'INCOM_ESSENTIAL' ) ) {
 	define( 'INCOM_ESSENTIAL', true );	// Should be false if this is the 'Lifetime' version
+}
+
+if ( !defined( 'INCOM_OPTION_KEY' ) ) {
+	define( 'INCOM_OPTION_KEY', 'incom' ); // used to save options in version >= 0.9.0
 }
 
 if ( !defined( 'INCOM_FILE' ) ) {
@@ -34,10 +38,12 @@ define( 'INCOM_NEWS_BUTTON', 'Get contacted' );
 
 require_once( INCOM_PATH . 'admin/class-register.php' );
 
-
 function incom_admin_init() {
 	// require_once( INCOM_PATH . 'admin/class-admin.php' );
 	require_once( INCOM_PATH . 'admin/class-admin-options.php' );
+	if ( INCOM_ESSENTIAL ) {
+		require_once( INCOM_PATH . 'admin/inc/class-no-premium.php'); 
+	}
 }
 
 function incom_frontend_init() {
@@ -57,5 +63,11 @@ if ( is_admin() ) {
 else {
 	add_action( 'plugins_loaded', 'incom_frontend_init', 15 );
 }
+
+// Feature: Support for WP-Ajaxify-Comments
+if ( (get_option( INCOM_OPTION_KEY.'_support_for_ajaxify_comments' ) == true) && !is_admin() ) {
+	require_once( INCOM_PATH . 'frontend/inc/class-wpac.php'); 
+}
+
 
 /***** Plugin by Kevin Weber || kevinw.de *****/
