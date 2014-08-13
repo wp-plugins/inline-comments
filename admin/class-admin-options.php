@@ -47,6 +47,8 @@ class INCOM_Admin_Options {
 			'select_bubble_fadein',
 			'select_bubble_fadeout',
 			'comment_permalink',
+			'cancel_x',
+			'cancel_link',
 			'bubble_static_always',
 
 			'bubble_static',
@@ -54,6 +56,7 @@ class INCOM_Admin_Options {
 			'select_align',
 			'select_comment_type',
 			'set_bgcolour',
+			'incom_set_bgopacity',
 			'set_maxwidth',
 			'custom_css',
 			'check_rmode'
@@ -73,7 +76,7 @@ class INCOM_Admin_Options {
 		        <li><a href="#tabs-1">Basics</a></li>
 				<li class="hide-wp"><a href="#tab-wordpress">WordPress-specific <span class="newred_dot">&bull;</span></a></li>
 				<li class="hide-disqus"><a href="#tab-disqus">Disqus-specific</a></li>
-		    	<li><a href="#tabs-4">Styling</a></li>
+		    	<li><a href="#tabs-4">Styling <span class="newred_dot">&bull;</span></a></li>
 		    	<?php do_action( 'incom_settings_page_tabs_link_after' ); ?>
 		    </ul>
 
@@ -118,7 +121,7 @@ class INCOM_Admin_Options {
 				    <table class="form-table">
 					    <tbody>
 					        <tr valign="top">
-					        	<th scope="row">Use Ajaxify (no page reload) <span class="newred">New!</span><br><span class="description thin">Requires <a href="http://wordpress.org/extend/plugins/wp-ajaxify-comments/" title="WP-Ajaxify-Comments" target="_blank">that plugin</a>.</th>
+					        	<th scope="row">Use Ajaxify (no page reload)<br><span class="description thin">Requires <a href="http://wordpress.org/extend/plugins/wp-ajaxify-comments/" title="WP-Ajaxify-Comments" target="_blank">that plugin</a>.</th>
 						        <td>
 									<input name="<?php echo INCOM_OPTION_KEY; ?>_support_for_ajaxify_comments" type="checkbox" value="1" <?php checked( '1', get_option( INCOM_OPTION_KEY.'_support_for_ajaxify_comments' ) ); ?> /> <span>Empower <a href="http://wordpress.org/extend/plugins/wp-ajaxify-comments/" title="WP-Ajaxify-Comments" target="_blank">WP-Ajaxify-Comments</a> (version 0.24.0 or higher) to add Ajax functionality to Inline Comments and improve the user experience: Your page will not reload after a comment is submitted. <b>Recommended.</b></span>
 						        </td>
@@ -172,9 +175,21 @@ class INCOM_Admin_Options {
 						        </td>
 					        </tr>
 					        <tr valign="top">
+					        	<th scope="row">Hide closing "x" <span class="newred">New!</span></th>
+						        <td>
+									<input name="cancel_x" type="checkbox" value="1" <?php checked( '1', get_option( 'cancel_x' ) ); ?> /> <span>If checked, the "x" at the right top of the comments wrapper will not be displayed.</span>
+						        </td>
+					        </tr>
+					        <tr valign="top">
 					        	<th scope="row">Hide Permalinks</th>
 						        <td>
 									<input name="comment_permalink" type="checkbox" value="1" <?php checked( '1', get_option( 'comment_permalink' ) ); ?> /> <span>If checked, the permalink icon next to each comment will not be displayed.</span>
+						        </td>
+					        </tr>
+					        <tr valign="top">
+					        	<th scope="row">Hide "cancel" link <span class="newred">New!</span></th>
+						        <td>
+									<input name="cancel_link" type="checkbox" value="1" <?php checked( '1', get_option( 'cancel_link' ) ); ?> /> <span>If checked, the "cancel" link at the left bottom of the comments wrapper will not be displayed.</span>
 						        </td>
 					        </tr>
 					    </tbody>
@@ -237,12 +252,19 @@ class INCOM_Admin_Options {
 						        </td>
 					        </tr>
 					        <tr valign="top">
-					        	<th scope="row">Background Colour <span class="description thin"><br>for comment threads</th>
+					        	<th scope="row">Background Colour <span class="description thin"><br>for comment threads</span></th>
 					        	<td>
 					        		<input id="incom_picker_input_bgcolor" class="picker-input" type="text" name="set_bgcolour" placeholder="#ffffff" value="<?php if (get_option("set_bgcolour") == "") { echo "#ffffff"; } else { echo get_option("set_bgcolour"); } ?>" />
 					        		<div id="incom_picker_bgcolor" class="picker-style"></div>
 					        	</td>
 					        </tr>
+					        <tr class="hide-wp" valign="top">
+					        	<th scope="row">Background Opacity <span class="newred">New!</span><span class="description thin"><br>for comment threads</span></th>
+					        	<td>
+					        		<input type="text" name="incom_set_bgopacity" placeholder="1" value="<?php echo get_option('incom_set_bgopacity'); ?>" /><br><span>Insert a value from 0 to 1 where "1" means maximum covering power. Insert 0.7 to make the opacity 70%.</span>
+					        	</td>
+					        </tr>
+
 
 					        <tr valign="top">
 					        	<th scope="row">Custom CSS <span class="description thin"><br>Add additional CSS. This should override any other stylesheets.</span></th>
@@ -252,7 +274,7 @@ class INCOM_Admin_Options {
 					        			For example:<br>
 					        			<i>.incom-bubble-dynamic a.incom-bubble-link { color: red; }</i><br>
 					        			<i>.incom-active { background: #f3f3f3; }</i><br>
-					        			(You don't know CSS? Try the <a href="http://www.w3schools.com/css/DEFAULT.asp" target="_blank" title="CSS Tutorial on W3Schools">CSS Tutorial</a> on W3Schools.)
+					        			(You don't know CSS? Try the <a href="http://kevinw.de/css-tutorial" target="_blank" title="CSS Tutorial on W3Schools">CSS Tutorial</a> on W3Schools.)
 					        		</span>
 					        	</td>
 					        </tr>
@@ -279,8 +301,16 @@ class INCOM_Admin_Options {
 			        <td>
 						<p><b>It's free!</b> Support me with <a href="http://kevinw.de/donate/InlineComments/" title="Pay me a delicious lunch" target="_blank">a delicious lunch</a> or give this plugin a 5 star rating <a href="http://wordpress.org/support/view/plugin-reviews/inline-comments?filter=5" title="Vote for Inline Comments" target="_blank">on WordPress.org</a>.</p>
 			        </td>       
-		        <td>
-					<p><b>Speed up your site</b> by replacing embedded Youtube and Vimeo videos with a clickable preview image: <a href="http://kevinw.de/ic-ll" title="Lazy Load for Videos" target="_blank">Lazy Load for Videos</a>.</p>
+		        <td style="width:300px;">
+					<p>
+						<b>Personal tip: Must use plugins</b>
+						<ol>
+							<li><a href="http://kevinw.de/ic-ll" title="Lazy Load for Videos" target="_blank">Lazy Load for Videos</a> (on my part)</li>
+							<li><a href="https://yoast.com/wordpress/plugins/seo/" title="WordPress SEO by Yoast" target="_blank">WordPress SEO</a> (by Yoast)</li>
+							<li><a href="http://kevinw.de/ic-wb" title="wBounce" target="_blank">wBounce</a> (on my part)</li>
+							<li><a href="https://wordpress.org/plugins/broken-link-checker/" title="Broken Link Checker" target="_blank">Broken Link Checker</a> (by Janis Elsts)</li>
+						</ol>
+					</p>
 		        </td>
 		        </tr>
 			</table>

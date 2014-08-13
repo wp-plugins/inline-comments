@@ -1,12 +1,12 @@
-=== Plugin Name ===
+=== Inline Comments ===
 Contributors: kevinweber
 Donate link: http://kevinw.de/donate/InlineComments/
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: admin, comment, comments, content, counter, free, integration, jquery, mobile, page, pages, plugin, post, posts, sidebar, wordpress
 Requires at least: 3.0
-Tested up to: 3.9.1
-Stable tag: 1.1
+Tested up to: 4.0
+Stable tag: 1.2
 
 Inline Comments adds your comment system to the side of paragraphs and other sections (like headlines and images) of your post.
 
@@ -48,8 +48,14 @@ First, you need an account and a registered site on disqus.com. Then read this: 
 
 == Changelog ==
 
+= 1.2 =
+* New feature: Added closing "x" to the right top of the comments wrapper. Can be removed per option
+* New feature: Change background opacity for comment threads
+* New feature: Hide "cancel" link
+* Fix: Now bubbles will only then appear when images, fonts and all other elements are loaded. So there is no displacement of bubbles anymore but it may take a bit longer until they are visible. (Displacements occurred especially on sites that load web fonts and when users with a slow internet connection visited the site.)
+
 = 1.1 =
-* No page reload anymore: INLINE COMMENTS NOW EMPOWERS WP-AJAXIFY-COMMENTS!! This improves the user experience with Ajax functionality: Your page will not reload after a comment is submitted.
+* No page reload anymore: INLINE COMMENTS NOW EMPOWERS WP-AJAXIFY-COMMENTS!! This improves the user experience with Ajax functionality: Your page will not reload after a comment is submitted
 
 = 1.0.6 =
 * New feature: Decide if bubbles should fade in/out or appear/disappear immediately
@@ -64,15 +70,18 @@ First, you need an account and a registered site on disqus.com. Then read this: 
 * New feature: Select bubble style for sections with no comments yet (options: plain or bubble)
 
 = 1.0 =
-* Major update! Many improvements and new functionalities.
-* This plugin now performs with native WordPress comments.
+* Major update! Many improvements and new functionalities
+* This plugin now performs with native WordPress comments
 * Removed option “identifier” (users cannot choose their own identifier anymore)
 
 = 0.8 =
-* Plugin goes public (Disqus-only).
+* Plugin goes public (Disqus-only)
 
 
 == Upgrade Notice ==
+
+= 1.2 =
+* Check your settings and how your inline comments look. This update comes with some style update. IMPORTANT: When you call your site the first time after the update, clear your browser’s cache and reload the page with “F5” to ensure that the current stylesheets are actually loaded. If you’re using a caching plugin, clear it’s cache, too.
 
 = 1.0 =
 * This plugin now performs with native WordPress comments.

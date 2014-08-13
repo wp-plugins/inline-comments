@@ -5,7 +5,7 @@
 class INCOM_Frontend {
 
 	function __construct() {
-		add_action( 'wp_enqueue_scripts', array( $this, 'lazyload_enqueue_jquery' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_jquery' ) );
 	}
 
 	/**
@@ -13,7 +13,7 @@ class INCOM_Frontend {
 	 */
 	function addActions() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'incom_enqueue_scripts' ) );
-		add_action( 'wp_footer', array( $this, 'load_incom'), 15, 'functions' );
+		add_action( 'wp_footer', array( $this, 'load_incom'), 444, 'functions' );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_incom_style') );
 		add_action( 'wp_head', array( $this, 'load_incom_custom_css') );
 	}
@@ -21,7 +21,7 @@ class INCOM_Frontend {
 	/**
  	 * Enable jQuery (comes with WordPress)
  	 */
- 	function lazyload_enqueue_jquery() {
+ 	function enqueue_jquery() {
      	wp_enqueue_script( 'jquery' );
  	}
 
