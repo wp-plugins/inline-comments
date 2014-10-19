@@ -13,66 +13,57 @@ class INCOM_No_Premium_Admin_Options {
 	 * Add content and settings to options page
 	 */
 	function register_incom_no_premium_settings() {
-		add_filter( 'register_incom_settings_after', array( $this, 'register_incom_no_premium_settings_after' ) );
 		add_filter( 'incom_settings_page_tabs_link_after', array( $this, 'add_incom_admin_tab_link' ) );
 		add_filter( 'incom_settings_page_tabs_after', array( $this, 'add_incom_admin_tab' ) );
 	}
-	// Step 1
-	function register_incom_no_premium_settings_after() {
-		$arr = array(
-			'displayBranding',
-			'displayAvatars'
-		);
-		foreach ( $arr as $i ) {
-			register_setting( 'incom-settings-group', $i );
-		}
-	}
-	// Step 2
-	function add_incom_admin_tab_link() {
-		echo '<li><a href="#tab-no-premium" class="tab-orange tab-premium">Premium <span class="newred_dot">&bull;</span></a></li>';
-	}
-	// Step 3
-	function add_incom_admin_tab() { ?>
-		<div id="tab-no-premium">
 
-			<h3>Get Premium and &hellip;</h3>
+	function add_incom_admin_tab_link() {
+		echo '<li><a href="#premium" class="tab-orange tab-premium">Premium <span class="newred_dot">&bull;</span></a></li>';
+	}
+	function add_incom_admin_tab() { ?>
+		<div id="premium">
+
+			<h3><?php esc_html_e( 'Premium Extension', INCOM_TD ); ?></h3>
+
+			<p><?php esc_html_e( 'Right now, every feature for Inline Comments is available FOR FREE, except for the "Remove branding" option. This is what you get when you buy premium:', INCOM_TD ); ?></p>
 
 			<table class="form-table">
 				<tbody>
 			        <tr valign="top">
-			        	<th scope="row">&hellip; remove branding</th>
+			        	<th scope="row"><?php esc_html_e( 'Remove branding', INCOM_TD ); ?></th>
 				        <td>
-							<span>The <i>Premium Extension</i> automatically removes the branding link from Inline Comments.</span>
+							<span><?php esc_html_e( 'The premium extension automatically removes the subtle branding link.', INCOM_TD ); ?></span>
 				        </td>
 			        </tr>
 			        <tr valign="top">
-			        	<th scope="row">&hellip; display avatars <span class="newred grey">Updated</span><br><span class="description thin">next to each comment</span></th>
+			        	<th scope="row"><?php esc_html_e( 'Get setup support', INCOM_TD ); ?></th>
 				        <td>
-							<span>Display photos/avatars from commentators next to each comment.</span>
+							<span><?php esc_html_e( 'I help you to choose the correct selectors.', INCOM_TD ); ?></span>
 				        </td>
 			        </tr>
 			        <tr valign="top">
-			        	<th scope="row">&hellip; insert content <span class="newred">New!</span></th>
+			        	<th scope="row"><?php esc_html_e( 'Lifetime updates', INCOM_TD ); ?><br><span class="description thin"><?php esc_html_e( 'Enjoy all coming features!', INCOM_TD ); ?></span></th>
 				        <td>
-							<span>Insert content (any HTML) above the list of comments.</span>
+							<span><?php esc_html_e( 'No matter what comes next: Once you\'ve bought premium, you\'re going to get every new feature for free. What do you think of social logins (Twitter, Facebook) or Inline Comments for Editors?', INCOM_TD ); ?></span>
 				        </td>
 			        </tr>
 			        <tr valign="top">
-			        	<th scope="row">&hellip; get preferred support<br><span class="description thin">to setup and style Inline Comments</span></th>
+			        	<th scope="row"><?php esc_html_e( 'Push development', INCOM_TD ); ?></th>
 				        <td>
-							<span>I help you to choose the correct selectors and assist you to make Inline Comments good-looking on your site.</span>
+							<span><?php esc_html_e( 'This plugin does not anywhere near compensate my month-long time efforts financially. WordPress development is a hobby of mine and allows me to experiment. With your purchase, you sponsor me to spend at least a bit more time to enhance Inline Comments.', INCOM_TD ); ?></span>
 				        </td>
 			        </tr>
 			        <tr valign="top">
-			        	<th scope="row">&hellip; enjoy coming features<br><span class="description thin">with free lifetime updates!</span></th>
+			        	<th scope="row"><?php esc_html_e( 'Request features', INCOM_TD ); ?></th>
 				        <td>
-							<span>Here is so much more to come!<br>What do you think of social logins (Twitter, Facebook) and the possibility to reply to specific inline comments?</span>
+							<span><?php esc_html_e( 'I\'m going to develop your feature request with priority (but no guarantee).', INCOM_TD ); ?></span>
 				        </td>
 			        </tr>
 			        <tr valign="top">
 			        	<th scope="row"><a href="https://sellfy.com/p/uzBe/" id="uzBe" class="sellfy-buy-button">buy</a><script type="text/javascript" src="https://sellfy.com/js/api_buttons.js"></script></th>
 				        <td>
-							<span>You could invest $2.000 for a developer to let him develop such an innovative comment system. Or you pay just $48 for Inline Comments that has already been developed in weeks-long work. The price on the green button might change over time. If you think the price is not appropriate in your case, feel free to <a href="http://kevinw.de/kontakt" target="_blank">contact me</a>. Many others and I are persuaded that this plugin will revolutionise the way users comment online. So make sure to get premium as long as it is that cheap and push development using <a href="https://sellfy.com/p/uzBe/" target="_blank" title="Buy Inline Comments Premium on Sellfy">this link</a> or the <span style="color:green">green</span> button on the left.</span>
+							<span><?php esc_html_e( 'Buy premium to get additional features, honour my month-long work and push development. The price might change/increase over time.', INCOM_TD ); ?></span>
+							<br><strong><?php esc_html_e( 'Immediate download after purchase.', INCOM_TD ); ?></strong>
 				        </td>
 			        </tr>
 			    </tbody>

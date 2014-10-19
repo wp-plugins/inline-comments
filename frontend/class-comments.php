@@ -1,7 +1,7 @@
 <?php
-class INCOM_Comments {
+class INCOM_Comments extends INCOM_Frontend {
 
-	private $loadPluginInfoHref = 'http://kevinw.de/inline-comments';
+	private $loadPluginInfoHref = 'http://kevinw.de/inline-comments/';
 	private $loadPluginInfoTitle = 'Inline Comments by Kevin Weber';
 	private $loadCancelLinkText = 'Cancel';
 	private $DataIncomValue = NULL;
@@ -9,6 +9,7 @@ class INCOM_Comments {
 	private $DataIncomKeyPOST = 'data_incom';
 
 	function __construct() {
+		add_filter( 'comment_form_default_fields', array( $this, 'comment_form_fields' ) );
 		add_action( 'comment_post', array( $this, 'add_comment_meta_data_incom' ) );
 		add_action( 'preprocess_comment' , array( $this, 'preprocess_comment_handler' ) );
 		add_action( 'wp_footer', array( $this, 'generateCommentsAndForm' ) );
@@ -47,8 +48,8 @@ class INCOM_Comments {
 		do_action( 'incom_cancel_x_after' );
 
 		echo apply_filters( 'incom_plugin_info', $this->loadPluginInfo() );
+		echo apply_filters( 'incom_comments_list_before', $this->comments_list_before() );
 
-		do_action( 'incom_comments_list_before' );
 		$this->loadCommentsList();
 		$this->loadCommentForm();
 
@@ -74,7 +75,7 @@ class INCOM_Comments {
 			'post_id' => get_the_ID(),
 			'type' => 'comment',
 			'callback' => array( $this, 'loadComment' ),
-			'avatar_size' => '0',
+			'avatar_size' => parent::get_avatar_size(),
 		);
 		wp_list_comments( apply_filters( 'incom_comments_list_args', $args ) );
 	}
@@ -99,7 +100,7 @@ class INCOM_Comments {
 		<<?php echo $tag ?> <?php comment_class( empty( $args['has_children'] ) ? '' : 'parent' ) ?> id="comment-<?php comment_ID() ?>" data-incom-comment="<?php echo $data_incom; ?>" style="display:none">
 		<?php if ( 'div' != $args['style'] ) : ?>
 
-		<div id="div-comment-<?php comment_ID() ?>" class="comment-body">
+		<div id="incom-div-comment-<?php comment_ID() ?>" class="comment-body">
 		
 		<?php
 			endif;
@@ -119,6 +120,25 @@ class INCOM_Comments {
 		<?php endif; ?>
 
 		<?php comment_text(); ?>
+
+		<?php if ( get_option( 'incom_reply' ) == '1' ) { ?>
+			<div class="incom-reply">
+			<?php
+				comment_reply_link( array_merge(
+						$args,
+						array(
+							'add_below' => 'incom-div-comment',
+							// 'respond_id' => 'incom-commentform',
+							// TODO: 'reply_text' => 'insert icon here',
+							'depth' => $depth,
+							'max_depth' => $args['max_depth'],
+							'login_text' => '',
+						)
+					)
+				);
+			?>
+			</div>
+		<? } ?>
 
 		<?php if ( 'div' != $args['style'] ) : ?>
 		</div>
@@ -150,6 +170,40 @@ class INCOM_Comments {
 		);
 
 		comment_form( apply_filters( 'incom_comment_form_args', $args ) );
+	}
+
+	/**
+	 * Template for comment form fields
+	 * @since 1.3
+	 */
+	function comment_form_fields() {
+		$commenter = wp_get_current_commenter();
+		$req = get_option( 'require_name_email' );
+		$aria_req = ( $req ? " aria-required='true'" : '' );
+
+		$fields =  array(
+		  'author' =>
+		    '<p class="comment-form-author"><label for="author">' . esc_html__( 'Name', INCOM_TD ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
+		    '<input id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) .
+		    '" size="30"' . $aria_req . ' /></p>',
+
+		  'email' =>
+		    '<p class="comment-form-email"><label for="email">' . esc_html__( 'Email', INCOM_TD ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
+		    '<input id="email" name="email" type="text" value="' . esc_attr(  $commenter['comment_author_email'] ) .
+		    '" size="30"' . $aria_req . ' /></p>',
+		);
+
+		if ( get_option( 'incom_field_url' ) !== '1' ) {
+			$fields_url = array(
+			  'url' =>
+			    '<p class="comment-form-url"><label for="url">' . esc_html__( 'Website', INCOM_TD ) . '</label>' .
+			    '<input id="url" name="url" type="text" value="' . esc_attr( $commenter['comment_author_url'] ) .
+			    '" size="30" /></p>',
+			);
+			$fields = array_merge( $fields, $fields_url );
+		}
+
+		return $fields;
 	}
 
 	/**
@@ -186,8 +240,8 @@ class INCOM_Comments {
 		$permalink_url = htmlspecialchars( get_comment_link( $comment_ID ) );
 		$permalink_img_url = plugins_url( 'images/permalink-icon.png' , INCOM_FILE );
 		$permalink_html = '<div class="comment-meta commentmetadata">
-			<a href="' . $permalink_url . '" title="Permalink to this comment">
-				<img src="' . $permalink_img_url . '" alt="">
+			<a class="incom-permalink" href="' . $permalink_url . '" title="Permalink to this comment">
+				<img class="incom-permalink-img" src="' . $permalink_img_url . '" alt="">
 			</a>
 		</div>';
 		return $permalink_html;
@@ -198,7 +252,7 @@ class INCOM_Comments {
 	 */
 	private function loadCancelX() {
 		if ( get_option( 'cancel_x' ) !== '1' ) {
-			return '<a class="incom-cancel incom-cancel-x" href title>&#10006;</a>';
+			return '<a class="incom-cancel incom-cancel-x" href title="'. esc_html__($this->loadCancelLinkText, INCOM_TD ) . '">&#10006;</a>';
 		}
 	}
 
@@ -207,9 +261,26 @@ class INCOM_Comments {
 	 */
 	private function loadCancelLink() {
 		if ( get_option( 'cancel_link' ) !== '1' ) {
-			return '<a class="incom-cancel incom-cancel-link" href title>' . $this->loadCancelLinkText . '</a>';
+			return '<a class="incom-cancel incom-cancel-link" href title>' . esc_html__($this->loadCancelLinkText, INCOM_TD ) . '</a>';
 		}
 	}
+
+	/**
+	 * Add content before comment list
+	 */
+	function comments_list_before() {
+		if ( get_option( 'incom_content_comments_before' ) != '' ) {
+			return get_option( 'incom_content_comments_before' );
+		}
+	}
+	
+	/**
+	 * Customise comment form
+	 */
+	// function comment_form_args( $args ) {
+	// 	$args['comment_notes_after'] = '';
+	// 	return $args;
+	// }
 
 }
 

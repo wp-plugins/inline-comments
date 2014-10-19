@@ -10,13 +10,15 @@
   // IDs
   var idWrapper = 'incom_wrapper';
     var idWrapperHash = '#'+idWrapper;
-  var idWrapperAppendTo = 'html'; // Alternative: 'body'
+  var idWrapperAppendTo = 'body'; // Alternative: 'body'
   var idCommentsAndForm = 'comments-and-form';
     var idCommentsAndFormHash = '#'+idCommentsAndForm;
+  var idCommentForm = 'incom-commentform';
 
   // Attributes
   var attDataIncom = 'data-incom';
     var attDataIncomComment = attDataIncom+'-comment';
+    var attDataIncomArr = []; // This array will contain all attDataIncom values
 
   // Classes
   var classActive = 'incom-active';
@@ -34,6 +36,8 @@
     var classBubbleLink = classBubble+'-link';
   var classCommentsWrapper = 'incom-comments-wrapper';
     var classCommentsWrapperDot = '.'+classCommentsWrapper;
+  var classReply = 'incom-reply';
+    var classReplyDot = '.'+classReply;
   var classCancel = 'incom-cancel'; // When a user clicks on an element with this class, the comments wrapper will be removed
     var classCancelDot = '.'+classCancel;
   var classBranding = 'incom-info-icon';
@@ -60,6 +64,17 @@
     setOptions( options );
     initIncomWrapper();
     displayBranding();
+
+    // CHECK: Ensure that #commentform is replaced by #incom-commentform to make IC work with Ajaxify
+    // CHECK: Use useful variables instead of hard-coded selectors
+    // TODO: Debug bugs
+    // TODO: Call that code only in class-wpac.php
+      $( classReplyDot + " .comment-reply-link" ).on( 'click', function() {
+        $( idCommentsAndFormHash + ' #commentform' ).attr( "id", idCommentForm );
+      });
+
+
+
   };
 
 
@@ -113,8 +128,11 @@
 
       $( selectors[j] ).each( function(i) {
         var $element = $( this );
+        var identifier = getIdentifier( $element );
 
-        addAtt( i, $element );
+        i = increaseIdentifierNumberIfAttPropExists( i, identifier );
+
+        addAtt( i, $element, identifier );
         addBubble( $element );
       });
 
@@ -122,16 +140,41 @@
   };
 
   /*
+   * Use the first five letters of the element's name as identifier
+   */
+  var getIdentifier = function( element ) {
+    var identifier = element.prop('tagName').substr(0,5);
+    return identifier;
+  };
+
+  /*
+   * Increase identifier number (i) if that specific attProp was already used. attProp must be unique
+   *
+   * @return
+   */
+  var increaseIdentifierNumberIfAttPropExists = function( i, identifier ) {
+    var attProp = identifier + i;
+
+    if ( $.inArray( attProp, attDataIncomArr ) !== -1 ) {
+      while ( $.inArray( attProp, attDataIncomArr ) !== -1 ) {
+        i++;
+        attProp = identifier + i;
+      }
+    }
+    attDataIncomArr.push(attProp);
+
+    return i;
+  };
+
+  /*
    * Add attribute attDataIncom to each element
    */
-  var addAtt = function( i, element ) {
-    // Use the first letter of the element's name as identifier
-    var identifier = element.prop('tagName').substr(0,1);
-
+  var addAtt = function( i, element, identifier ) {
     // If element has no attribute attDataIncom, add it
     if ( !element.attr( attDataIncom ) ) {
-      var attProp = identifier + i;
-      element.attr( attDataIncom, attProp );
+    	var attProp = identifier + i; // WOULD BE BETTER: var attProp = identifier + '-' + i; // BUT THAT WOULD CONFLICT WITH ALREADY STORED COMMENTS
+
+    	element.attr( attDataIncom, attProp );
     }
   };
 
@@ -189,6 +232,8 @@
     var selectByAtt = '[' + attDataIncomComment + '=' + attFromSource + ']';
     // Count elements
     var $count = $( selectByAtt ).length;
+    // Increase count for each inline reply, too
+    $count += $( selectByAtt + ' .children li').length;
 
     return $count;
   };
@@ -343,7 +388,16 @@
     setPosition( source, $commentsWrapper );
     testIfMoveSiteIsNecessary( $commentsWrapper );
     handleClickElsewhere();
-    handleClickCancel();
+    ajaxStop();
+  };
+
+  /*
+   * Use ajaxStop function to prevent plugin from breaking when another plugin uses Ajax
+   */
+  var ajaxStop = function() {
+    $(document).ready(handleClickCancel()).ajaxStop(function() {
+      handleClickCancel();
+    });
   };
 
   /*
@@ -371,6 +425,7 @@
     var selectByAtt = '[' + attDataIncomComment + '=' + getAttDataIncomValue() + ']';
     $( selectComment ).hide();
     $( selectComment + selectByAtt ).addClass( classVisibleComment ).show();
+    $( classVisibleCommentDot + ' .children li' ).show();
   };
 
   /*
@@ -540,15 +595,60 @@
    * Prevent users from removing branding
    */
   var displayBranding = function() {
-    $( classBrandingDot ).css({
-      'display': 'block',
-      'visibility': 'visible',
-    });
+    var $element = $( classBrandingDot );
 
-    var color = $( classBrandingDot ).css('color');
-    if (color === 'rgb(255, 255, 255)' || color === 'white') {
-      $( classBrandingDot ).css("cssText", "color: black!important;");
+    // DON'T BE EVIL - IS THIS ACTUALLY WORTH THE EFFORT?
+    
+    if ( $element.length ) {
+
+      $element.css({
+        'display': 'block',
+        'visibility': 'visible',
+      });
+
+      // When the opacity/alpha is to low, increase opacity and color it black
+      if ( 
+          ( $element.css( "opacity" ) < 0.2 ) ||
+          ( getAlpha( $element ) < 0.2 )
+        )
+      {
+        $element.css({'color':'rgba(0,0,0,1)'}).fadeTo( "fast", 0.5 );
+      }
+
+      // Get colour
+      var color = $element.css('color');
+      // Test if spaces or tab stops exist
+      if ( /\s/g.test(color) ) {
+        // Remove spaces
+        color = color.replace(/\s/g, '');
+      }
+      // Convert to lowercase
+      color = color.toLowerCase();
+      // When transparent: make it white
+      if ( (color === 'rgb(255,255,255)' || color === 'white') || color === 'rgba(255,255,255,0)' ) {
+        $element.css("cssText", "color: black!important;");
+      }
+
     }
+
+  };
+
+  /*
+   * Test if element's color contains a RGBA value.
+   * If yes,  @return integer
+   *          else @return 1
+   */
+  var getAlpha = function( element ) {
+    var alpha = 1;
+    var color = element.css( 'color' );
+
+    // Search color value for string "rgba" (case-insensitive)
+    if ( /rgba/i.test( color ) ) {
+      // Get the fourth (alpha) value using string replace
+      alpha = color.replace(/^.*,(.+)\)/,'$1');
+    }
+
+    return alpha;
   };
 
   /*

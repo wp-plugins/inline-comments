@@ -1,17 +1,18 @@
 <?php
 /*
  * Plugin Name: Inline Comments
- * Plugin URI: http://kevinw.de/inline-comments
+ * Plugin URI: http://kevinw.de/inline-comments/
  * Description: Inline Comments adds your comment system to the side of paragraphs and other sections (like headlines and images) of your post. It performs native with WordPress comments.
  * Author: Kevin Weber
- * Version: 1.2
+ * Version: 2.0
  * Author URI: http://kevinw.de/
  * License: GPL v3
  * Text Domain: inline-comments
+ * Domain Path: /languages
 */
 
 if ( !defined( 'INCOM_VERSION' ) ) {
-	define( 'INCOM_VERSION', '1.2' );
+	define( 'INCOM_VERSION', '2.0' );
 }
 
 if ( !defined( 'INCOM_VERSION_NAME' ) ) {
@@ -26,12 +27,28 @@ if ( !defined( 'INCOM_OPTION_KEY' ) ) {
 	define( 'INCOM_OPTION_KEY', 'incom' ); // used to save options in version >= 0.9.0
 }
 
+if ( !defined( 'INCOM_TD' ) ) {
+	define( 'INCOM_TD', 'inline-comments' ); // = text domain (used for translations)
+}
+
 if ( !defined( 'INCOM_FILE' ) ) {
 	define( 'INCOM_FILE', __FILE__ );
 }
 
 if ( !defined( 'INCOM_PATH' ) )
-	define( 'INCOM_PATH', plugin_dir_path( __FILE__ ) );
+	define( 'INCOM_PATH', plugin_dir_path( INCOM_FILE ) );
+
+
+
+/**
+ * Load plugin textdomain.
+ * @since 2.0
+ */
+function incom_load_textdomain() {
+  load_plugin_textdomain( 'inline-comments', false, dirname( plugin_basename( INCOM_FILE ) ) . '/languages/' ); 
+}
+add_action( 'plugins_loaded', INCOM_OPTION_KEY.'_load_textdomain' );
+
 
 define( 'INCOM_NEWS_TEXT', 'To suggest and vote for new features: Let the developer come into contact with you.' );
 define( 'INCOM_NEWS_BUTTON', 'Get contacted' );

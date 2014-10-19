@@ -1,60 +1,52 @@
 (function( incom, $, undefined ) {
 
-  var $selectCommentType = $( 'select[name=select_comment_type]' );
-  var classHidePraefix = '.hide-';
-  var commentSystems = {
-    // Comment Systems
-    classDisqus: 'disqus',
-    classWP: 'wp',
-  };
-
-
   $(document).ready(function() {
     init();
   });
 
-
   var init = function() {
-    handleSelect();
     handleTabs();
     addColourPicker();
+
   };
 
-  var handleSelect = function() {
-    // In general, hide specific elements
-    handleSelectCommentType();
+  /*
+   * Handle jQuery tabs
+   */
+  var handleTabs = function() {
+    $( "#tabs" ).tabs();
 
-    // Handle change event
-    $selectCommentType.change(function () {
-      var $element = $( this );
-      for ( var system in commentSystems ) {
-        handleChangeCommentType( $element, commentSystems[system] );
+    handleTabs_URL();
+    handleTabs_URL_scrollTop();
+  };
+
+  /*
+   * Change URL when tab is clicked
+   */
+  var handleTabs_URL = function() {
+    $( "#tabs" ).on( "tabsactivate", function( event, ui ) {
+      var href = ui.newTab.children('li a').first().attr("href");
+      history.pushState(null, null, href);
+      if(history.pushState) {
+          history.pushState(null, null, href);
+      }
+      else {
+          location.hash = href;
       }
     });
   };
 
-  var handleSelectCommentType = function() {
-    for ( var system in commentSystems ) {
-      var $classHide = $( classHidePraefix+commentSystems[system] );
-      if ( $selectCommentType.val() !== commentSystems[system] ) {
-        $classHide.hide();
+  /*
+   * When user calls a URL that contains a hash, scroll to top
+   */
+  var handleTabs_URL_scrollTop = function() {
+    setTimeout(function() {
+      if (location.hash) {
+        $( "html, body" ).animate({ scrollTop: 0 }, 1000);
       }
-    }
+    }, 1);
   };
 
-  var handleChangeCommentType = function( element, commentType ) {
-    var $classHide = $( classHidePraefix+commentType );
-    if ( element.val() === commentType ) {
-      $classHide.show( 'fast' );
-    }
-    else {
-       $classHide.hide( 'middle' );
-    }
-  };
-
-  var handleTabs = function() {
-    $( "#tabs" ).tabs();
-  };
 
   var addColourPicker = function() {
     $('#incom_picker_bgcolor').farbtastic('#incom_picker_input_bgcolor');
