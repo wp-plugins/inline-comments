@@ -19,6 +19,8 @@
   var attDataIncom = 'data-incom';
     var attDataIncomComment = attDataIncom+'-comment';
     var attDataIncomArr = []; // This array will contain all attDataIncom values
+    var attDataIncomBubble = attDataIncom+'-bubble';
+    var attDataIncomRef = attDataIncom+'-ref';
 
   // Classes
   var classActive = 'incom-active';
@@ -42,6 +44,7 @@
     var classCancelDot = '.'+classCancel;
   var classBranding = 'incom-info-icon';
     var classBrandingDot = '.'+classBranding;
+  var classScrolledTo = 'incom-scrolled-to';
 
   // Other
   var selectComment = idCommentsAndFormHash+' .comment';
@@ -64,16 +67,12 @@
     setOptions( options );
     initIncomWrapper();
     displayBranding();
+    references();
 
-    // CHECK: Ensure that #commentform is replaced by #incom-commentform to make IC work with Ajaxify
-    // CHECK: Use useful variables instead of hard-coded selectors
-    // TODO: Debug bugs
-    // TODO: Call that code only in class-wpac.php
-      $( classReplyDot + " .comment-reply-link" ).on( 'click', function() {
-        $( idCommentsAndFormHash + ' #commentform' ).attr( "id", idCommentForm );
-      });
-
-
+    // This code is required to make Inline Comments work with Ajaxify
+    $( classReplyDot + " .comment-reply-link" ).on( 'click', function() {
+      $( idCommentsAndFormHash + ' #commentform' ).attr( "id", idCommentForm );
+    });
 
   };
 
@@ -242,7 +241,8 @@
    * Get container that contains the bubble link
    */
   var loadBubbleContainer = function( source ) {
-    var text = '<div class="' + loadBubbleContainerClass( source ) + '" />';
+    var bubbleValue = source.attr( attDataIncom );
+    var text = '<div class="' + loadBubbleContainerClass( source ) + '" '+attDataIncomBubble+'="'+bubbleValue+'" />';
     return text;
   };
 
@@ -336,7 +336,7 @@
       // Else ...
       else {
         // Remove classActive before classActive will be added to another element (source)
-        removeClassActive();
+        removeExistingClasses( classActive );
 
         // Add classActive to active elements (paragraphs, divs, etc.)
         source.addClass( classActive );
@@ -351,47 +351,32 @@
     });
   };
 
-  /* 
-   * Remove classActive from the element that's not 'active' anymore
+  /*
+   * Create comments wrapper
    */
-   var removeClassActive = function() {
-    var $activeE = $( classActiveDot );
-    if ( $activeE.length !== 0 ) {
-      $activeE.removeClass( classActive );
-      // If the attribute 'class' is empty -> remove it
-      if ( $activeE.prop( 'class' ).length === 0 ) {
-        $activeE.removeAttr( 'class' );
-      }
+  var createCommentsWrapper = function() {
+    var $commentsWrapper;
+
+    if ( $( classCommentsWrapperDot ).length === 0 ) {
+      $commentsWrapper = $('<div/>',
+          {
+            'class': classCommentsWrapper,
+          })
+          .appendTo( idWrapperHash )
+          .css('background-color', 'rgba(' + convertHexToRgb( o.background ) + ',' + o.backgroundOpacity + ')');
     }
-  };
+    else {
+      $commentsWrapper = $( classCommentsWrapperDot );
+    }
 
-  /*
-   * @return Hex colour value as RGB
-   */
-  var convertHexToRgb = function (h) {
-    var r = parseInt((removeHex(h)).substring(0,2),16);
-    var g = parseInt((removeHex(h)).substring(2,4),16);
-    var b = parseInt((removeHex(h)).substring(4,6),16);
-    return r+','+g+','+b;
-  };
-
-  /*
-   * Remove Hex ("#") from string
-   */
-  var removeHex = function (h) {
-    return ( h.charAt(0) === "#" ) ? h.substring(1,7) : h;
+    return $commentsWrapper;
   };
 
   /* 
    * Load comments wrapper
    */
   var loadCommentsWrapper = function ( source ) {
-    var $commentsWrapper = $('<div/>',
-        {
-          'class': classCommentsWrapper,
-        })
-      .appendTo( idWrapperHash )
-      .css('background-color', 'rgba(' + convertHexToRgb( o.background ) + ',' + o.backgroundOpacity + ')');
+    var $commentsWrapper = createCommentsWrapper();
 
     loadComments();
     loadCommentForm();
@@ -537,7 +522,7 @@
       if ( fadeout ) {
         $classCommentsWrapper.fadeOut( 'fast', function() {
             $( this ).remove();
-            removeClassActive();
+            removeExistingClasses( classActive );
         });
       }
       else {
@@ -602,6 +587,75 @@
   };
 
   /*
+   * Controle references
+   * @since 2.1
+   */
+  var references = function() {
+    var source = attDataIncomRef;
+    var target = attDataIncom;
+    removeOutdatedReferences( source, target );
+    loadScrollScript( source, target );
+  };
+
+  /*
+   * Remove outdated references that link to an element that doesn't exist
+   * @since 2.1
+   */
+  var removeOutdatedReferences = function( source, target ) {
+    $( '['+source+']' ).each( function() {
+
+      var $source = $( this );
+      var targetValue = $source.attr( source );  // Get value from source element
+      var $target = $( '['+target+'="'+targetValue+'"]' );
+
+      if ( ! $target.length ) { // No length = linked element doesn't exist
+        $source.parent().remove();
+      }
+
+    });
+  };
+
+  /*
+   * Load scroll script
+   * @since 2.1
+   *
+   * @todo When page scrolls to element, automatically open wrapper
+   */
+  var loadScrollScript = function( source, target ) {
+    $( '['+source+']' ).click(function() {
+
+      var targetValue = $( this ).attr( source );  // Get value from source element
+      var $target = $( '['+target+'="'+targetValue+'"]' );
+
+      if ( $target.length ) {
+        var targetOffset = $target.offset().top - 30;
+
+        $( 'html, body' ).animate({
+            scrollTop: targetOffset
+        }, 1200, 'quart' );
+
+        removeExistingClasses( classScrolledTo );
+        $target.addClass( classScrolledTo );
+      }
+
+    });
+  };
+
+  /*
+   * Remove existing classes (expects parameter "className" - without "dot")
+   */
+  var removeExistingClasses = function( className ) {
+    var $activeE = $( '.'+className );
+    if ( $activeE.length !== 0 ) {
+      $activeE.removeClass( className );
+      // If the attribute 'class' is empty -> remove it
+      if ( $activeE.prop( 'class' ).length === 0 ) {
+        $activeE.removeAttr( 'class' );
+      }
+    }
+  };
+
+  /*
    * Prevent users from removing branding
    */
   var displayBranding = function() {
@@ -625,6 +679,12 @@
         $element.css({'color':'rgba(0,0,0,1)'}).fadeTo( "fast", 0.5 );
       }
 
+      // When the font size is to low, increase it
+      var $fontsize = $element.css( "font-size" ).replace(/\D/g,'');  // Remove everything but numbers
+      if ( $fontsize < 6 ) {
+        $element.css({'font-size':'13px'});
+      }
+
       // Get colour
       var color = $element.css('color');
       // Test if spaces or tab stops exist
@@ -642,6 +702,10 @@
     }
 
   };
+
+  /*
+   * Private Helpers
+   */
 
   /*
    * Test if element's color contains a RGBA value.
@@ -662,12 +726,36 @@
   };
 
   /*
+   * @return Hex colour value as RGB
+   */
+  var convertHexToRgb = function (h) {
+    var r = parseInt((removeHex(h)).substring(0,2),16);
+    var g = parseInt((removeHex(h)).substring(2,4),16);
+    var b = parseInt((removeHex(h)).substring(4,6),16);
+    return r+','+g+','+b;
+  };
+
+  /*
+   * Remove Hex ("#") from string
+   */
+  var removeHex = function (h) {
+    return ( h.charAt(0) === "#" ) ? h.substring(1,7) : h;
+  };
+
+  /*
    * Split selectors
    * @return array
    */
   var splitSelectors = function( selectors ) {
     var splitSelectors = selectors.split(',');
     return splitSelectors;
+  };
+
+  /*
+   * Set easing "quart"
+   */
+  $.easing.quart = function (x, t, b, c, d) {
+    return -c * ((t=t/d-1)*t*t*t - 1) + b;
   };
 
 }( window.incom = window.incom || {}, jQuery ));

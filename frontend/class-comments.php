@@ -9,10 +9,40 @@ class INCOM_Comments extends INCOM_Frontend {
 	private $DataIncomKeyPOST = 'data_incom';
 
 	function __construct() {
+		add_filter( 'get_comment_text' , array( $this, 'comment_text' ), 10, 2 );
 		add_filter( 'comment_form_default_fields', array( $this, 'comment_form_fields' ) );
 		add_action( 'comment_post', array( $this, 'add_comment_meta_data_incom' ) );
 		add_action( 'preprocess_comment' , array( $this, 'preprocess_comment_handler' ) );
 		add_action( 'wp_footer', array( $this, 'generateCommentsAndForm' ) );
+	}
+
+	/**
+	 * Filter comment_text
+	 * @since 2.1
+	 */
+	function comment_text( $comment_text, $comment ) {
+		if ( isset($comment) && ( get_option(INCOM_OPTION_KEY.'_references') != "nowhere" ) ) {
+			$comment_text = $this->comment_text_reference( $comment_text, $comment );
+		}
+		return $comment_text;
+	}
+
+	/**
+	 * Add reference to referenced paragraph/element
+	 * @since 2.1
+	 */
+	private function comment_text_reference( $comment_text, $comment ) {
+		if ( $this->DataIncomKey != '' ) {
+			$data_incom = get_comment_meta( $comment->comment_ID, $this->DataIncomKey, true );
+
+			if ( $data_incom != '' ) {	// Only display reference when comment actually references on a paragraph/element
+				$jump_to_text = esc_html__( 'Reference', INCOM_TD );
+				$jump_to = "<span class='incom-ref-link' data-incom-ref='$data_incom'>$jump_to_text</span>";
+				$comment_text .= "<span class='incom-ref'>$jump_to</span>";
+			}
+		}
+
+		return $comment_text;
 	}
 
 	/**
@@ -100,7 +130,7 @@ class INCOM_Comments extends INCOM_Frontend {
 		<<?php echo $tag ?> <?php comment_class( empty( $args['has_children'] ) ? '' : 'parent' ) ?> id="comment-<?php comment_ID() ?>" data-incom-comment="<?php echo $data_incom; ?>" style="display:none">
 		<?php if ( 'div' != $args['style'] ) : ?>
 
-		<div id="incom-div-comment-<?php comment_ID() ?>" class="comment-body">
+		<div id="incom-div-comment-<?php comment_ID() ?>" class="incom-div-comment comment-body">
 		
 		<?php
 			endif;
@@ -138,7 +168,7 @@ class INCOM_Comments extends INCOM_Frontend {
 				);
 			?>
 			</div>
-		<? } ?>
+		<?php } ?>
 
 		<?php if ( 'div' != $args['style'] ) : ?>
 		</div>

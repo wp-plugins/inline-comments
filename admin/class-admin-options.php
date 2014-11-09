@@ -51,7 +51,7 @@ class INCOM_Admin_Options {
 			'select_bubble_style',
 			'set_bgcolour',
 			INCOM_OPTION_KEY.'_set_bgopacity',
-			'bubble_static',
+			INCOM_OPTION_KEY.'_bubble_static',
 
 			// Advanced
 			INCOM_OPTION_KEY.'_content_comments_before',
@@ -60,8 +60,9 @@ class INCOM_Admin_Options {
 			'comment_permalink',
 			'cancel_x',
 			'cancel_link',
-			'incom_field_url',
-			'incom_bubble_static_always',
+			INCOM_OPTION_KEY.'_field_url',
+			INCOM_OPTION_KEY.'_references',
+			INCOM_OPTION_KEY.'_bubble_static_always',
 		);
 		foreach ( $arr as $i ) {
 			register_setting( 'incom-settings-group', $i );
@@ -77,8 +78,8 @@ class INCOM_Admin_Options {
 			</h2>
 
 			<ul class="ui-tabs-nav">
-		        <li><a href="#basics"><?php esc_html_e( 'Basics', INCOM_TD ); ?> <span class="newred_dot">&bull;</span></a></li>
-		    	<li><a href="#styling"><?php esc_html_e( 'Styling', INCOM_TD ); ?> <span class="newred_dot">&bull;</span></a></li>
+		        <li><a href="#basics"><?php esc_html_e( 'Basics', INCOM_TD ); ?></a></li>
+		    	<li><a href="#styling"><?php esc_html_e( 'Styling', INCOM_TD ); ?></a></li>
 				<li><a href="#advanced"><?php esc_html_e( 'Advanced', INCOM_TD ); ?> <span class="newred_dot">&bull;</span></a></li>
 		    	<?php do_action( 'incom_settings_page_tabs_link_after' ); ?>
 		    </ul>
@@ -94,7 +95,7 @@ class INCOM_Admin_Options {
 				    <table class="form-table">
 					    <tbody>
 					        <tr valign="top">
-					        	<th scope="row"><?php esc_html_e( 'Comment System', INCOM_TD ); ?> <span class="newred"><?php esc_html_e( 'Updated', INCOM_TD ); ?></span></th>
+					        	<th scope="row"><?php esc_html_e( 'Comment System', INCOM_TD ); ?></th>
 						        <td>
 									<select class="select" typle="select" name="select_comment_type">
 										<option value="wp"<?php if (get_option('select_comment_type') === 'wp') { echo ' selected="selected"'; } ?>><?php esc_html_e( 'WordPress Comments', INCOM_TD ); ?></option>
@@ -131,7 +132,7 @@ class INCOM_Admin_Options {
 						        </td>
 					        </tr>
 					        <tr valign="top">
-					        	<th scope="row"><?php esc_html_e( 'Enable Inline Replies', INCOM_TD ); ?> <span class="newred"><?php esc_html_e( 'New!', INCOM_TD ); ?></span></th>
+					        	<th scope="row"><?php esc_html_e( 'Enable Inline Replies', INCOM_TD ); ?></span></th>
 						        <td>
 									<input name="incom_reply" type="checkbox" value="1" <?php checked( '1', get_option( 'incom_reply' ) ); ?> /><span><?php esc_html_e( 'If checked, a reply link will be added below each inline comment and users can reply directly.', INCOM_TD ); ?></span>
 						        </td>
@@ -186,7 +187,7 @@ class INCOM_Admin_Options {
 							    </td>
 					        </tr>
 					        <tr valign="top">
-					        	<th scope="row"><?php esc_html_e( 'Display Avatars', INCOM_TD ); ?><span class="newred"><?php esc_html_e( 'New!', INCOM_TD ); ?></span><br><span class="description thin"><?php esc_html_e( 'next to each comment', INCOM_TD ); ?></span></th>
+					        	<th scope="row"><?php esc_html_e( 'Display Avatars', INCOM_TD ); ?><br><span class="description thin"><?php esc_html_e( 'next to each comment', INCOM_TD ); ?></span></th>
 						        <td>
 									<input name="<?php echo INCOM_OPTION_KEY; ?>_avatars_display" type="checkbox" value="1" <?php checked( '1', get_option( INCOM_OPTION_KEY.'_avatars_display' ) ); ?> /><span><?php esc_html_e( 'If checked, avatars will be displayed next to each comment.', INCOM_TD ); ?></span><br><br>
 						        	<input type="number" name="<?php echo INCOM_OPTION_KEY; ?>_avatars_size" placeholder="15" value="<?php echo get_option( INCOM_OPTION_KEY.'_avatars_size' ); ?>" /><span><?php esc_html_e( 'Define avatar size (in px). Insert an integer higher than 0.', INCOM_TD ); ?></span>
@@ -217,7 +218,7 @@ class INCOM_Admin_Options {
 					        <tr valign="top">
 					        	<th scope="row"><?php esc_html_e( 'Hide Static Bubbles', INCOM_TD ); ?></th>
 						        <td>
-									<input name="bubble_static" type="checkbox" value="1" <?php checked( '1', get_option( 'bubble_static' ) ); ?> /><span><?php esc_html_e( 'This checkbox only affects bubbles that indicate a paragraph/element with at least one comment. If checked, the comment count bubbles will only be visible when the user hovers the specific paragraph. (By default, bubbles that indicate at least one comment are always visible.)', INCOM_TD ); ?></span>
+									<input name="<?php echo INCOM_OPTION_KEY; ?>_bubble_static" type="checkbox" value="1" <?php checked( '1', get_option( INCOM_OPTION_KEY.'_bubble_static' ) ); ?> /><span><?php esc_html_e( 'This checkbox only affects bubbles that indicate a paragraph/element with at least one comment. If checked, the comment count bubbles will only be visible when the user hovers the specific paragraph. (By default, bubbles that indicate at least one comment are always visible.)', INCOM_TD ); ?></span>
 						        </td>
 					        </tr>
 				        </tbody>
@@ -232,7 +233,7 @@ class INCOM_Admin_Options {
 				    <table class="form-table">
 					    <tbody>
 					        <tr valign="top">
-					        	<th scope="row"><?php esc_html_e( 'Content Before', INCOM_TD ); ?><span class="newred"><?php esc_html_e( 'New!', INCOM_TD ); ?></span><br><span class="description thin"><?php esc_html_e( 'Insert HTML above the list of comments', INCOM_TD ); ?></span></th>
+					        	<th scope="row"><?php esc_html_e( 'Content Before', INCOM_TD ); ?><br><span class="description thin"><?php esc_html_e( 'Insert HTML above the list of comments', INCOM_TD ); ?></span></th>
 					        	<td>
 					        		<textarea rows="5" cols="70" type="text" name="<?php echo INCOM_OPTION_KEY; ?>_content_comments_before" placeholder=""><?php echo get_option(INCOM_OPTION_KEY.'_content_comments_before'); ?></textarea>
 					        	</td>
@@ -268,9 +269,9 @@ class INCOM_Admin_Options {
 						        </td>
 					        </tr>
 					        <tr valign="top">
-					        	<th scope="row"><?php esc_html_e( 'Remove Field "Website"', INCOM_TD ); ?> <span class="newred"><?php esc_html_e( 'New!', INCOM_TD ); ?></span></th>
+					        	<th scope="row"><?php esc_html_e( 'Remove Field "Website"', INCOM_TD ); ?></th>
 						        <td>
-									<input name="incom_field_url" type="checkbox" value="1" <?php checked( '1', get_option( 'incom_field_url' ) ); ?> /><span><?php esc_html_e( 'If checked, users cannot submit an URL/Website when they comment inline.', INCOM_TD ); ?></span>
+									<input name="<?php echo INCOM_OPTION_KEY; ?>_field_url" type="checkbox" value="1" <?php checked( '1', get_option( INCOM_OPTION_KEY.'_field_url' ) ); ?> /><span><?php esc_html_e( 'If checked, users cannot submit an URL/Website when they comment inline.', INCOM_TD ); ?></span>
 						        </td>
 					        </tr>
 					        <tr valign="top">
@@ -280,9 +281,21 @@ class INCOM_Admin_Options {
 						        </td>
 					        </tr>
 					        <tr valign="top">
+					        	<th scope="row"><?php esc_html_e( 'Display References', INCOM_TD ); ?> <span class="newred"><?php esc_html_e( 'New!', INCOM_TD ); ?></th>
+						        <td>
+									<select class="select" typle="select" name="<?php echo INCOM_OPTION_KEY; ?>_references">
+										<option value="below_text"<?php if (get_option( INCOM_OPTION_KEY.'_references') === 'below_text') { echo ' selected="selected"'; } ?>><?php esc_html_e( 'Below comment text', INCOM_TD ); ?></option>
+										<option value="nowhere"<?php if (get_option( INCOM_OPTION_KEY.'_references') === 'nowhere') { echo ' selected="selected"'; } ?>><?php esc_html_e( 'Nowhere', INCOM_TD ); ?></option>
+									</select>
+									<span><br>
+									<?php esc_html_e( 'References are links to referenced paragraphs. By default, they are visible in the regular comment section (below your article) next to a comment that has been submitted using Inline Comments.', INCOM_TD ); ?>
+									</span>
+						        </td>
+					        </tr>
+					        <tr valign="top">
 					        	<th scope="row"><?php esc_html_e( 'Always Display Bubbles', INCOM_TD ); ?></th>
 						        <td>
-									<input name="bubble_static_always" type="checkbox" value="1" <?php checked( '1', get_option( 'bubble_static_always' ) ); ?> /><span><?php esc_html_e( 'If checked, the comment count bubbles will always be visible (and not only on hover). Bubbles will not fade.', INCOM_TD ); ?></span>
+									<input name="<?php echo INCOM_OPTION_KEY; ?>_bubble_static_always" type="checkbox" value="1" <?php checked( '1', get_option( INCOM_OPTION_KEY.'_bubble_static_always' ) ); ?> /><span><?php esc_html_e( 'If checked, the comment count bubbles will always be visible (and not only on hover). Bubbles will not fade.', INCOM_TD ); ?></span>
 						        </td>
 					        </tr>
 					    </tbody>
