@@ -23,14 +23,16 @@ Demo and more information on the developer’s website: [kevinw.de/inline-commen
 = Translators =
 * German (de_DE) - [Kevin Weber](http://kevinw.de/)
 * Serbian (sr_RS) - [Ogi Djuraskovic](http://firstsiteguide.com/)
+* Spanish (es_ES) - [Andrew Kurtis](http://www.webhostinghub.com/)
 
 If you have created your own language pack, or have an update of an existing one, you can [send me](http://kevinw.de/kontakt/) your gettext PO and MO so that I can bundle it into my plugin. You can download the latest POT file [from here](http://plugins.svn.wordpress.org/inline-comments/trunk/languages/inline-comments.pot).
 
 
 == Installation ==
 
-1. Upload Inline Comments into you plugin directory (/wp-content/plugins/) and activate the plugin through the 'Plugins' menu in WordPress.
+1. Upload Inline Comments into you plugin directory (/wp-content/plugins/) and activate the pastlugin through the 'Plugins' menu in WordPress.
 2. Configure the plugin via the admin backend.
+3. Optionally: Sign up to the Inline Comments newsletter to get notified about major updates.
 
 
 == Frequently Asked Questions ==
@@ -55,10 +57,14 @@ For comment system "WordPress Comments", use custom CSS like this:
 == Changelog ==
 
 = 2.1.1 =
+* Changed option "Remove Permalinks" to "Display Permalinks" (permalinks are hidden by default as from now). If this option is checked, a permalink icon will be displayed next to each comment.
 * Improved colour picker.
+* Scroll smoothly when the user clicks on a comment's permalink icon.
+* Removed "Comment System" option.
 * Fix: Replaced '<?=' with '<?php echo'.
 * Improvement: Use not minified JavaScript files when SCRIPT_DEBUG is true (defined in wp-config.php).
 * Added version number to scripts.
+* Added Spanish translation by Andrew Kurtis.
 
 = 2.1 =
 * New feature: References. The default WordPress comments that are displayed below your article contain a link to the referenced paragraph. Click on the link to jump to the paragraph.
@@ -115,6 +121,9 @@ For comment system "WordPress Comments", use custom CSS like this:
 
 
 == Upgrade Notice ==
+
+= 2.1.1 =
+* If you want permalinks to be displayed next to each comment, please check the updated option "Display Permalinks". Previously, those permalinks had been visible by default.
 
 = 2.0.1 =
 * I renamed functions.php to inline-comments.php. This causes your plugin to be deactivated. Simply activate it again and everything works fine.
