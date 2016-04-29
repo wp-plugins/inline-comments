@@ -107,7 +107,7 @@ class INCOM_Comments extends INCOM_Frontend {
 			'callback' => array( $this, 'loadComment' ),
 			'avatar_size' => parent::get_avatar_size(),
 		);
-		wp_list_comments( apply_filters( 'incom_comments_list_args', $args ), get_comments() );
+		wp_list_comments( apply_filters( 'incom_comments_list_args', $args ), get_comments($args) );
 	}
 
 	/**
