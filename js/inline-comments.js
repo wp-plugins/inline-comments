@@ -462,6 +462,7 @@
     var input = $( '<input>' )
      .attr( 'type', 'hidden' )
      .attr( 'name', dataIncomKey ).val( getAttDataIncomValue );
+    $(idCommentsAndFormHash + ' .form-submit input[name='+dataIncomKey+']').remove();
     $( idCommentsAndFormHash + ' .form-submit' ).append( $( input ) );
   };
 
